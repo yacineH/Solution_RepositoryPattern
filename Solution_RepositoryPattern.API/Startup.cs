@@ -1,11 +1,15 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Solution_RepositoryPattern.Core.Interfaces;
+using Solution_RepositoryPattern.EFCore;
+using Solution_RepositoryPattern.EFCore.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +31,15 @@ namespace Solution_RepositoryPattern.API
         {
 
             services.AddControllers();
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), 
+                                     b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
+            });
+
+            services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Solution_RepositoryPattern.API", Version = "v1" });
