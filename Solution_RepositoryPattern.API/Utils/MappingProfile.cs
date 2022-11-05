@@ -16,7 +16,7 @@ namespace Solution_RepositoryPattern.API.Utils
                 .ForMember(dest=>dest.Book_Id,src=>src.MapFrom(src=>src.Id))
                 .ForMember(dest=>dest.Book_Title,src=>src.MapFrom(src=>src.Title))
                 .ForMember(dest => dest.Author_Id, src => src.MapFrom(src => src.AuthorId))
-                .ForMember(dest => dest.LongTitle, src => src.MapFrom(src => src.Title.Length>3))
+                .ForMember(dest => dest.IsFree, src => src.MapFrom(src => !src.Price.HasValue))
                 .ReverseMap();
         }
     }

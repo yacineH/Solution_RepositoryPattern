@@ -13,5 +13,7 @@ namespace Solution_RepositoryPattern.Core.Models
 
         [Required,MaxLength(150)]
         public string Name { get; set; }
+
+
     }
 }

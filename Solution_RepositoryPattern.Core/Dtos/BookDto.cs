@@ -17,10 +17,12 @@ namespace Solution_RepositoryPattern.Core.Dtos
 
         public int Author_Id { get; set; }
 
+        public double? Price { get; set; }
+
         public AuthorDto Author { get; set; }
 
         //solution possible mais je vais utiliser automapper
         //public bool? LongTitle => this.Book_Title.Length > 3;
-        public bool? LongTitle { get; set;}
+        public bool? IsFree { get; set;}
     }
 }

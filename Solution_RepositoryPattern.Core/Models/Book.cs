@@ -14,6 +14,8 @@ namespace Solution_RepositoryPattern.Core.Models
         [Required,MaxLength(150)]
         public string Title { get; set; }
 
+        public  double?  Price{ get; set; }
+
         public int AuthorId { get; set; }
 
         public Author Author { get; set; }
