@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Solution_RepositoryPattern.Core.Constants;
 using Solution_RepositoryPattern.Core.Dtos;
 using Solution_RepositoryPattern.Core.Interfaces;
 using Solution_RepositoryPattern.Core.Models;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 
@@ -13,42 +16,29 @@ namespace Solution_RepositoryPattern.API.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
+        private readonly IMapper _mapper;
         private readonly IBaseRepository<Book> _booksRepository;
 
-        public BooksController(IBaseRepository<Book> booksRepository)
+        public BooksController(IBaseRepository<Book> booksRepository, IMapper mapper)
         {
-            _booksRepository = booksRepository;   
+            _booksRepository = booksRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public ActionResult GetById()
         {
-            //je recupere un objet domain et puis il faut le converir en DTO
-            //id en dure on imagine qu'on le recupere du client
             var book = _booksRepository.GetById(1);
-            var author = book.Author;
-            var authorDto = new AuthorDto { Author_Id = author.Id, Nom = author.Name };
+            var bookDto = _mapper.Map<BookDto>(book);
 
-            var bookDto = new BookDto
-            {
-                Author = authorDto,
-                Author_Id = book.AuthorId,
-                Book_Id = book.Id,
-                Book_Title = book.Title,
-            };
             return Ok(bookDto);
         }
 
         [HttpGet("GetAll")]
         public ActionResult GetAll()
         {
-            return Ok(_booksRepository.GetAll().Select(book => new BookDto
-            {
-                Author = new AuthorDto { Author_Id = book.Author.Id, Nom = book.Author.Name },
-                Author_Id = book.AuthorId,
-                Book_Id = book.Id,
-                Book_Title = book.Title,
-            })) ;
+            var result = _mapper.Map<IEnumerable<BookDto>>(_booksRepository.GetAll());
+            return Ok(result) ;
         }
 
 
@@ -56,51 +46,34 @@ namespace Solution_RepositoryPattern.API.Controllers
         public ActionResult GetByName()
         {
             var book = _booksRepository.Find(b => b.Title == "Book 1", new[] { "Author" });
-            var bookDto = new BookDto
-            {
-                Author = new AuthorDto { Author_Id = book.Author.Id, Nom = book.Author.Name },
-                Author_Id = book.AuthorId,
-                Book_Id = book.Id,
-                Book_Title = book.Title,
-            };
+            var bookDto = _mapper.Map<BookDto>(book);
+            
             return Ok(bookDto);
         }
 
         [HttpGet("GetAllWithAuthors")]
         public ActionResult GetAllWithAuthors()
         {
-            return Ok(_booksRepository.FindAll(b => b.Title.Contains("Book 1"), new[] { "Author" })
-                .Select(book=> new BookDto
-                 {
-                     Author = new AuthorDto { Author_Id = book.Author.Id, Nom = book.Author.Name },
-                    Author_Id = book.AuthorId,
-                     Book_Id = book.Id,
-                     Book_Title = book.Title,
+            var result = _mapper.Map<IEnumerable<BookDto>>(_booksRepository.FindAll(b => b.Title.Contains("Book 1"), new[] { "Author" }));
 
-                 }));
+            return Ok(result);
         }
 
 
         [HttpGet("GetOrdered")]
         public ActionResult GetOrdered()
         {
-            return Ok(_booksRepository.FindAll(b => b.Title.Contains("Book"), null, null, b => b.Id, OrderBy.Descending)
-                      .Select(book => new BookDto 
-                      { 
-                          Author = new AuthorDto { Author_Id = book.Author.Id, Nom = book.Author.Name },
-                          Author_Id = book.AuthorId, 
-                          Book_Id = book.Id, 
-                          Book_Title = book.Title 
-                      }));
+            var result = _mapper.Map<IEnumerable<BookDto>>(_booksRepository.FindAll(b => b.Title.Contains("Book"), null, null, b => b.Id, OrderBy.Descending));
+
+            return Ok(result);
         }
 
         [HttpPost("AddOne")]
         public ActionResult AddOne()
         {
-            //on imagine qu'on recupere une dto object depuis le client (BookBto)
-            //et puis je le converti en class domain (Book)
             var bookDto = new BookDto { Book_Title = "Test 3", Author_Id = 1 };
-            var book = new Book { Title = bookDto.Book_Title, AuthorId = bookDto.Author_Id };
+            var book = _mapper.Map<Book>(bookDto);
+
             return Ok(_booksRepository.Add(book));
         }
 
