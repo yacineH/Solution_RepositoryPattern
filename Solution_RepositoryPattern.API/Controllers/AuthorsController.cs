@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Solution_RepositoryPattern.Core.Dtos;
 using Solution_RepositoryPattern.Core.Interfaces;
 using Solution_RepositoryPattern.Core.Models;
 using System.Threading.Tasks;
@@ -20,13 +21,18 @@ namespace Solution_RepositoryPattern.API.Controllers
         [HttpGet]
         public ActionResult GetById()
         {
-            return Ok(_authorsRepository.GetById(1));
+            //id est en dure on imagine qu'on le recupre depuis le client
+            var author = _authorsRepository.GetById(1);
+            var authorDto = new AuthorDto { Author_Id = author.Id, Nom = author.Name };
+            return Ok(authorDto);
         }
 
         [HttpGet("GetByIdAsync")]
         public async Task<IActionResult> GetByIdAsync()
         {
-            return Ok(await _authorsRepository.GetByIdAsync(1));
+            var author = await _authorsRepository.GetByIdAsync(1);
+            var authorDto = new AuthorDto { Author_Id = author.Id, Nom = author.Name };
+            return Ok(authorDto);
         }
     }
 }
