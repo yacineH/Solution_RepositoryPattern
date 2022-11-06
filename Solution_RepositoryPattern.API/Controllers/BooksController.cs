@@ -26,17 +26,9 @@ namespace Solution_RepositoryPattern.API.Controllers
             _mapper = mapper;
         }
 
-        //[HttpGet]
-        //public ActionResult GetById()
-        //{
-        //    var book = _booksRepository.GetById(1);
-        //    var bookDto = _mapper.Map<BookDto>(book);
-
-        //    return Ok(bookDto);
-        //}
 
         [HttpGet]
-        public async Task<ActionResult> GetById()
+        public async Task<IActionResult> GetById()
         {
             var book = await _booksRepository.GetByIdAsync(1);
             var bookDto = _mapper.Map<BookDto>(book);
@@ -44,33 +36,17 @@ namespace Solution_RepositoryPattern.API.Controllers
             return Ok(bookDto);
         }
 
-        //[HttpGet("GetAll")]
-        //public ActionResult GetAll()
-        //{
-        //    var result = _mapper.Map<IEnumerable<BookDto>>(_booksRepository.GetAll());
-        //    return Ok(result) ;
-        //}
-
 
         [HttpGet("GetAll")]
-        public async Task<ActionResult> GetAll()
+        public async Task<IActionResult> GetAll()
         {
             var result = _mapper.Map<IEnumerable<BookDto>>(await _booksRepository.GetAllAsync());
             return Ok(result);
         }
 
 
-        //[HttpGet("GetByName")]
-        //public ActionResult GetByName()
-        //{
-        //    var book = _booksRepository.Find(b => b.Title == "Book 1", new[] { "Author" });
-        //    var bookDto = _mapper.Map<BookDto>(book);
-
-        //    return Ok(bookDto);
-        //}
-
         [HttpGet("GetByName")]
-        public async Task<ActionResult> GetByName()
+        public async Task<IActionResult> GetByName()
         {
             var book = await _booksRepository.FindAsync(b => b.Title == "Book 1", new[] { "Author" });
             var bookDto = _mapper.Map<BookDto>(book);
@@ -79,17 +55,8 @@ namespace Solution_RepositoryPattern.API.Controllers
         }
 
 
-
-        //[HttpGet("GetAllWithAuthors")]
-        //public ActionResult GetAllWithAuthors()
-        //{
-        //    var result = _mapper.Map<IEnumerable<BookDto>>(_booksRepository.FindAll(b => b.Title.Contains("Book 1"), new[] { "Author" }));
-
-        //    return Ok(result);
-        //}
-
         [HttpGet("GetAllWithAuthors")]
-        public async Task<ActionResult> GetAllWithAuthors()
+        public async Task<IActionResult> GetAllWithAuthors()
         {
             var result = _mapper.Map<IEnumerable<BookDto>>(await _booksRepository.FindAllAsync(b => b.Title.Contains("Book 1"), new[] { "Author" }));
 
@@ -97,16 +64,9 @@ namespace Solution_RepositoryPattern.API.Controllers
         }
 
 
-        //[HttpGet("GetOrdered")]
-        //public ActionResult GetOrdered()
-        //{
-        //    var result = _mapper.Map<IEnumerable<BookDto>>(_booksRepository.FindAll(b => b.Title.Contains("Book"), null, null, b => b.Id, OrderBy.Descending));
-
-        //    return Ok(result);
-        //}
 
         [HttpGet("GetOrdered")]
-        public async Task<ActionResult> GetOrdered()
+        public async Task<IActionResult> GetOrdered()
         {
             var result = _mapper.Map<IEnumerable<BookDto>>(await _booksRepository.FindAllAsync(b => b.Title.Contains("Book"), null, null, b => b.Id, OrderBy.Descending));
 
@@ -114,18 +74,8 @@ namespace Solution_RepositoryPattern.API.Controllers
         }
 
 
-
-        //[HttpPost("AddOne")]
-        //public ActionResult AddOne()
-        //{
-        //    var bookDto = new BookDto { Book_Title = "Test 3", Author_Id = 1 };
-        //    var book = _mapper.Map<Book>(bookDto);
-
-        //    return Ok(_booksRepository.Add(book));
-        //}
-
         [HttpPost("AddOne")]
-        public async Task<ActionResult> AddOne()
+        public async Task<IActionResult> AddOne()
         {
             var bookDto = new BookDto { Book_Title = "Test 3", Author_Id = 1 };
             var book = _mapper.Map<Book>(bookDto);

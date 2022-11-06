@@ -32,19 +32,78 @@ namespace Solution_RepositoryPattern.API
 
             services.AddControllers();
 
+            //add dbcontext
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), 
                                      b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
             });
 
+            //allow Cors
+            services.AddCors();
+
+            //injection
             services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             
-            services.AddSwaggerGen(c =>
+            //config de swagger
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Solution_RepositoryPattern.API", Version = "v1" });
+                #region config-Sawagger
+                options.SwaggerDoc("v1", new OpenApiInfo 
+                { 
+                    Title = "Solution_RepositoryPattern.API",
+                    Version = "v1",
+                    Description ="Projet Pro Api",
+                    TermsOfService =new Uri("https://www.google.com"),
+                    Contact = new OpenApiContact
+                    {
+                        Name="Yacine.H",
+                        Email="yacine.hayat@gmail.com",
+                        Url =new Uri("https://www.google.com")
+                    },
+                    License =new OpenApiLicense
+                    {
+                        Name="My License",
+                        Url = new Uri("https://www.google.com")
+                    }
+                    
+
+                });
+                #endregion
+                #region security swagger
+                ////1-security authorization for all endpoints 
+                //options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                //{
+                //    Name = "Authorization",
+                //    Type = SecuritySchemeType.ApiKey,
+                //    Scheme = "Bearer",
+                //    BearerFormat = "JWT",
+                //    In = ParameterLocation.Header,
+                //    Description = "Entrer votre Key JWT"
+                //});
+
+                ////2-security authorization for individual endpoints
+                //options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                //{
+                //    {
+                //        new OpenApiSecurityScheme
+                //        {
+                //            Reference =new OpenApiReference
+                //            {
+                //               Type = ReferenceType.SecurityScheme,
+                //               Id = "Bearer"
+                //            },
+                //            Name="Bearer",
+                //            In = ParameterLocation.Header
+                //        },
+                //        new List<string>()
+                //    }
+                //});
+                #endregion
+
             });
 
+            //add automapper
             services.AddAutoMapper(typeof(Startup));
         }
 
@@ -59,6 +118,9 @@ namespace Solution_RepositoryPattern.API
             }
 
             app.UseRouting();
+
+            //avant authentification
+            app.UseCors(c=>c.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
             app.UseAuthorization();
 
