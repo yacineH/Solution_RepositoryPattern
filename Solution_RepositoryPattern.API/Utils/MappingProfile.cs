@@ -18,6 +18,8 @@ namespace Solution_RepositoryPattern.API.Utils
                 .ForMember(dest => dest.Author_Id, src => src.MapFrom(src => src.AuthorId))
                 .ForMember(dest => dest.IsFree, src => src.MapFrom(src => !src.Price.HasValue))
                 .ReverseMap();
+            CreateMap<Genre, GenreDto>()
+                .ReverseMap();
         }
     }
 }

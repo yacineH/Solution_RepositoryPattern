@@ -28,7 +28,7 @@ namespace Solution_RepositoryPattern.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetById()
+        public async Task<IActionResult> GetByIdAsync()
         {
             var book = await _booksRepository.GetByIdAsync(1);
             var bookDto = _mapper.Map<BookDto>(book);
@@ -37,16 +37,16 @@ namespace Solution_RepositoryPattern.API.Controllers
         }
 
 
-        [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAll()
+        [HttpGet("GetAllAsync")]
+        public async Task<IActionResult> GetAllAsync()
         {
             var result = _mapper.Map<IEnumerable<BookDto>>(await _booksRepository.GetAllAsync());
             return Ok(result);
         }
 
 
-        [HttpGet("GetByName")]
-        public async Task<IActionResult> GetByName()
+        [HttpGet("GetByNameAsync")]
+        public async Task<IActionResult> GetByNameAsync()
         {
             var book = await _booksRepository.FindAsync(b => b.Title == "Book 1", new[] { "Author" });
             var bookDto = _mapper.Map<BookDto>(book);
@@ -55,8 +55,8 @@ namespace Solution_RepositoryPattern.API.Controllers
         }
 
 
-        [HttpGet("GetAllWithAuthors")]
-        public async Task<IActionResult> GetAllWithAuthors()
+        [HttpGet("GetAllWithAuthorsAsync")]
+        public async Task<IActionResult> GetAllWithAuthorsAsync()
         {
             var result = _mapper.Map<IEnumerable<BookDto>>(await _booksRepository.FindAllAsync(b => b.Title.Contains("Book 1"), new[] { "Author" }));
 
@@ -65,8 +65,8 @@ namespace Solution_RepositoryPattern.API.Controllers
 
 
 
-        [HttpGet("GetOrdered")]
-        public async Task<IActionResult> GetOrdered()
+        [HttpGet("GetOrderedAsync")]
+        public async Task<IActionResult> GetOrderedAsync()
         {
             var result = _mapper.Map<IEnumerable<BookDto>>(await _booksRepository.FindAllAsync(b => b.Title.Contains("Book"), null, null, b => b.Id, OrderBy.Descending));
 
@@ -74,8 +74,8 @@ namespace Solution_RepositoryPattern.API.Controllers
         }
 
 
-        [HttpPost("AddOne")]
-        public async Task<IActionResult> AddOne()
+        [HttpPost("AddOneAsync")]
+        public async Task<IActionResult> AddOneAsync()
         {
             var bookDto = new BookDto { Book_Title = "Test 3", Author_Id = 1 };
             var book = _mapper.Map<Book>(bookDto);

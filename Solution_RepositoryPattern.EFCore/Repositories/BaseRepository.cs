@@ -191,6 +191,24 @@ namespace Solution_RepositoryPattern.EFCore.Repositories
             return entities;
         }
 
+        public T Update(T entity)
+        {
+            _context.SaveChanges();
+            return entity;
+        }
 
+        public async Task<T> SingleAsync(Expression<Func<T,bool>> match)
+        {
+           return await _context.Set<T>().SingleOrDefaultAsync(match);
+        }
+
+        public T Delete(T entity)
+        {
+            _context.Set<T>().Remove(entity);
+            _context.SaveChanges();
+
+            return entity; 
+        }
+ 
     }
 }

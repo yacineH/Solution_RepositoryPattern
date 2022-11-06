@@ -42,5 +42,12 @@ namespace Solution_RepositoryPattern.Core.Interfaces
         IEnumerable<T> AddRange(IEnumerable<T> entities);
 
         Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities);
+
+        T Update(T entity);
+
+        Task<T> SingleAsync(Expression<Func<T, bool>> match);
+
+        T Delete(T entity);
+
     }
 }
