@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Threading.Tasks;
 
 namespace Solution_RepositoryPattern.API.Controllers
 {
@@ -25,56 +26,111 @@ namespace Solution_RepositoryPattern.API.Controllers
             _mapper = mapper;
         }
 
+        //[HttpGet]
+        //public ActionResult GetById()
+        //{
+        //    var book = _booksRepository.GetById(1);
+        //    var bookDto = _mapper.Map<BookDto>(book);
+
+        //    return Ok(bookDto);
+        //}
+
         [HttpGet]
-        public ActionResult GetById()
+        public async Task<ActionResult> GetById()
         {
-            var book = _booksRepository.GetById(1);
+            var book = await _booksRepository.GetByIdAsync(1);
             var bookDto = _mapper.Map<BookDto>(book);
 
             return Ok(bookDto);
         }
+
+        //[HttpGet("GetAll")]
+        //public ActionResult GetAll()
+        //{
+        //    var result = _mapper.Map<IEnumerable<BookDto>>(_booksRepository.GetAll());
+        //    return Ok(result) ;
+        //}
+
 
         [HttpGet("GetAll")]
-        public ActionResult GetAll()
+        public async Task<ActionResult> GetAll()
         {
-            var result = _mapper.Map<IEnumerable<BookDto>>(_booksRepository.GetAll());
-            return Ok(result) ;
+            var result = _mapper.Map<IEnumerable<BookDto>>(await _booksRepository.GetAllAsync());
+            return Ok(result);
         }
 
 
+        //[HttpGet("GetByName")]
+        //public ActionResult GetByName()
+        //{
+        //    var book = _booksRepository.Find(b => b.Title == "Book 1", new[] { "Author" });
+        //    var bookDto = _mapper.Map<BookDto>(book);
+
+        //    return Ok(bookDto);
+        //}
+
         [HttpGet("GetByName")]
-        public ActionResult GetByName()
+        public async Task<ActionResult> GetByName()
         {
-            var book = _booksRepository.Find(b => b.Title == "Book 1", new[] { "Author" });
+            var book = await _booksRepository.FindAsync(b => b.Title == "Book 1", new[] { "Author" });
             var bookDto = _mapper.Map<BookDto>(book);
-            
+
             return Ok(bookDto);
         }
 
+
+
+        //[HttpGet("GetAllWithAuthors")]
+        //public ActionResult GetAllWithAuthors()
+        //{
+        //    var result = _mapper.Map<IEnumerable<BookDto>>(_booksRepository.FindAll(b => b.Title.Contains("Book 1"), new[] { "Author" }));
+
+        //    return Ok(result);
+        //}
+
         [HttpGet("GetAllWithAuthors")]
-        public ActionResult GetAllWithAuthors()
+        public async Task<ActionResult> GetAllWithAuthors()
         {
-            var result = _mapper.Map<IEnumerable<BookDto>>(_booksRepository.FindAll(b => b.Title.Contains("Book 1"), new[] { "Author" }));
+            var result = _mapper.Map<IEnumerable<BookDto>>(await _booksRepository.FindAllAsync(b => b.Title.Contains("Book 1"), new[] { "Author" }));
 
             return Ok(result);
         }
 
+
+        //[HttpGet("GetOrdered")]
+        //public ActionResult GetOrdered()
+        //{
+        //    var result = _mapper.Map<IEnumerable<BookDto>>(_booksRepository.FindAll(b => b.Title.Contains("Book"), null, null, b => b.Id, OrderBy.Descending));
+
+        //    return Ok(result);
+        //}
 
         [HttpGet("GetOrdered")]
-        public ActionResult GetOrdered()
+        public async Task<ActionResult> GetOrdered()
         {
-            var result = _mapper.Map<IEnumerable<BookDto>>(_booksRepository.FindAll(b => b.Title.Contains("Book"), null, null, b => b.Id, OrderBy.Descending));
+            var result = _mapper.Map<IEnumerable<BookDto>>(await _booksRepository.FindAllAsync(b => b.Title.Contains("Book"), null, null, b => b.Id, OrderBy.Descending));
 
             return Ok(result);
         }
 
+
+
+        //[HttpPost("AddOne")]
+        //public ActionResult AddOne()
+        //{
+        //    var bookDto = new BookDto { Book_Title = "Test 3", Author_Id = 1 };
+        //    var book = _mapper.Map<Book>(bookDto);
+
+        //    return Ok(_booksRepository.Add(book));
+        //}
+
         [HttpPost("AddOne")]
-        public ActionResult AddOne()
+        public async Task<ActionResult> AddOne()
         {
             var bookDto = new BookDto { Book_Title = "Test 3", Author_Id = 1 };
             var book = _mapper.Map<Book>(bookDto);
 
-            return Ok(_booksRepository.Add(book));
+            return Ok(await _booksRepository.AddAsync(book));
         }
 
     }

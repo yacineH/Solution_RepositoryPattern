@@ -18,17 +18,17 @@ namespace Solution_RepositoryPattern.API.Controllers
             _authorsRepository = authorsRepository;
         }
 
-        [HttpGet]
-        public ActionResult GetById()
-        {
-            //id est en dure on imagine qu'on le recupre depuis le client
-            var author = _authorsRepository.GetById(1);
-            var authorDto = new AuthorDto { Author_Id = author.Id, Nom = author.Name };
-            return Ok(authorDto);
-        }
+        //[HttpGet]
+        //public ActionResult GetById()
+        //{
+        //    //id est en dure on imagine qu'on le recupre depuis le client
+        //    var author = _authorsRepository.GetById(1);
+        //    var authorDto = new AuthorDto { Author_Id = author.Id, Nom = author.Name };
+        //    return Ok(authorDto);
+        //}
 
-        [HttpGet("GetByIdAsync")]
-        public async Task<IActionResult> GetByIdAsync()
+        [HttpGet("GetById")]
+        public async Task<IActionResult> GetById()
         {
             var author = await _authorsRepository.GetByIdAsync(1);
             var authorDto = new AuthorDto { Author_Id = author.Id, Nom = author.Name };
