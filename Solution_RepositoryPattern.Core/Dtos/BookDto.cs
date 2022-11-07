@@ -1,4 +1,5 @@
-﻿using Solution_RepositoryPattern.Core.Models;
+﻿using Microsoft.AspNetCore.Http;
+using Solution_RepositoryPattern.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,8 +11,6 @@ namespace Solution_RepositoryPattern.Core.Dtos
 {
     public class BookDto
     {
-        public int Book_Id { get; set; }
-
         [Required, MaxLength(150)]
         public string Book_Title { get; set; }
 
@@ -19,10 +18,11 @@ namespace Solution_RepositoryPattern.Core.Dtos
 
         public double? Price { get; set; }
 
-        public AuthorDto Author { get; set; }
+        public IFormFile Poster { get; set; }
 
+        public byte GenreId { get; set; }
         //solution possible mais je vais utiliser automapper
         //public bool? LongTitle => this.Book_Title.Length > 3;
-        public bool? IsFree { get; set;}
+        public bool? IsFree { get; set; } = false;
     }
 }

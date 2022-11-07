@@ -19,5 +19,11 @@ namespace Solution_RepositoryPattern.Core.Models
         public int AuthorId { get; set; }
 
         public Author Author { get; set; }
+
+        public byte[] Poster { get; set; }
+
+        public Genre Genre { get; set; }
+
+        public byte GenreId { get; set; }
     }
 }
