@@ -21,17 +21,25 @@ namespace Solution_RepositoryPattern.API.Controllers
     public class BooksController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly ILogger _logger;
         private readonly IUnitOfWork _unitOfWork;
 
-        public BooksController(IUnitOfWork unitOfWork, IMapper mapper,ILogger logger)
+        public BooksController(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _logger = logger;
+
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        #region apres modif
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            Log.Information("Exe : GetAllAsync");
+            var result = await _unitOfWork.Books.GetAllAsync(new[] {"Genre","Author"} );
+            return Ok(result);
+        }
+
+
         [HttpPost("CreateAsync")]
         public async Task<IActionResult> CreateAsync([FromForm]BookDto dto)
         {
@@ -68,29 +76,79 @@ namespace Solution_RepositoryPattern.API.Controllers
             return Ok(book);
         }
 
-        #endregion
 
-
-
-        #region avant modif
-        [HttpGet]
-        public async Task<IActionResult> GetByIdAsync()
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetByIdAsync(int id)
         {
-            var book = await _unitOfWork.Books.GetByIdAsync(1);
-            var bookDto = _mapper.Map<BookDto>(book);
+            var book = await _unitOfWork.Books.FindAsync(b=>b.Id == id, new[] {"Author","Genre"});
 
-            return Ok(bookDto);
+            if (book == null)
+                return NotFound($"le book avec id :{id} n'existe pas");
+
+            return Ok(book);
         }
 
 
-        [HttpGet("GetAllAsync")]
-        public async Task<IActionResult> GetAllAsync()
+        [HttpGet("GetByGenreId")]
+        public async Task<IActionResult> GetByGenreIdAsync(byte genreId)
         {
-            var result = _mapper.Map<IEnumerable<BookDto>>(await _unitOfWork.Books.GetAllAsync());
+            Log.Information("Exe : GetByGenreIdAsync");
+            var result = await _unitOfWork.Books.GetAllAsync(b=>b.GenreId == genreId,new[] { "Genre", "Author" });
             return Ok(result);
         }
 
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            var book = await _unitOfWork.Books.FindAsync(b=>b.Id == id);
+
+            if (book == null)
+                return NotFound($"book avec id {id} n'existe pas en base");
+
+            return Ok(_unitOfWork.Books.Delete(book));
+            
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAsync(int id,[FromForm]BookDto dto)
+        {
+            var book = await _unitOfWork.Books.FindAsync(b => b.Id == dto.GenreId);
+
+            if (book == null)
+                return NotFound($"book avec id {id} n'existe pas en base");
+
+            var isValidGenre = _unitOfWork.Genres.SingleAsync(g => g.Id == dto.GenreId);
+
+            if (isValidGenre == null)
+                return BadRequest($"GenreId n'existe pas en base");
+            
+            if (dto.Poster != null) 
+            {
+                if (!RestrictionFile.Extensions.Contains(Path.GetExtension(dto.Poster.FileName).ToLower()))
+                    return BadRequest("seulement les fichiers avec extention : .jpg,.png sont autorisés");
+
+                if (dto.Poster.Length > RestrictionFile.MaximumSize)
+                    return BadRequest("le fichier ne doit pas depasser 1MB");
+
+                var dataStream = new MemoryStream();
+                await dto.Poster.CopyToAsync(dataStream);
+
+                book.Poster = dataStream.ToArray();
+            }
+
+            book.Title = dto.Book_Title;
+            book.GenreId = dto.GenreId;
+            book.AuthorId = dto.Author_Id;
+            book.Price = dto.Price;
+
+            return Ok(_unitOfWork.Books.Update(book));
+
+        }
+
+
+
+        #region avant-modif
         [HttpGet("GetByNameAsync")]
         public async Task<IActionResult> GetByNameAsync()
         {

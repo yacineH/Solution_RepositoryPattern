@@ -13,21 +13,19 @@ namespace Solution_RepositoryPattern.API.Controllers
     [ApiController]
     public class AuthorsController : ControllerBase
     {
-        private readonly ILogger _logger;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public AuthorsController(IMapper mapper,IUnitOfWork unitOfWork,ILogger logger)
+        public AuthorsController(IMapper mapper,IUnitOfWork unitOfWork)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
-            _logger = logger;
+
         }
 
-        [HttpGet("GetByIdAsync")]
-        public async Task<IActionResult> GetByIdAsync()
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetByIdAsync(int id)
         {
-            _logger.LogInformation("Execution Controller Author : GetByIdAsync");
-            var author = await _unitOfWork.Authors.GetByIdAsync(1);
+            var author = await _unitOfWork.Authors.FindAsync(a=>a.Id == id);
             var authorDto = _mapper.Map<AuthorDto>(author);  
             return Ok(authorDto);
         }

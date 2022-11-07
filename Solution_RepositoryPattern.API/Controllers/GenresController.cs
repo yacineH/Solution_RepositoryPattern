@@ -19,12 +19,12 @@ namespace Solution_RepositoryPattern.API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unityOfWork;
-        private readonly ILogger _logger;
 
-        public GenresController(IMapper mapper, IUnitOfWork unitOfWork,ILogger logger)
+
+        public GenresController(IMapper mapper, IUnitOfWork unitOfWork)
         {
             _mapper = mapper;
-            _logger = logger;
+
             _unityOfWork = unitOfWork;
         }
 

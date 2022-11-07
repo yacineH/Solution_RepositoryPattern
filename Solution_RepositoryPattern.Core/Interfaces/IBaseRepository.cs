@@ -10,17 +10,32 @@ namespace Solution_RepositoryPattern.Core.Interfaces
 {
     public interface IBaseRepository<T> where T : class
     {
+        #region final
+        Task<IEnumerable<T>> GetAllAsync(string[] includes = null);
+        Task<T> AddAsync(T entity);
+
+        Task<T> FindAsync(Expression<Func<T, bool>> match, string[] includes = null);
+
+        Task<IEnumerable<T>> GetAllAsync(Expression<Func<T,bool>> match,string[] includes = null);
+        #endregion
+
+
+
+
+
+
+
+
+
         T GetById(int id);
 
-        Task<T> GetByIdAsync(int id);
+
 
         IEnumerable<T> GetAll();
 
-        Task<IEnumerable<T>> GetAllAsync();
-
         T Find(Expression<Func<T, bool>> match, string[] includes = null);
 
-        Task<T> FindAsync(Expression<Func<T, bool>> match, string[] includes = null);
+        
 
         IEnumerable<T> FindAll(Expression<Func<T, bool>> match, string[] includes = null);
 
@@ -38,7 +53,7 @@ namespace Solution_RepositoryPattern.Core.Interfaces
 
         T Add(T entity);
 
-        Task<T> AddAsync(T entity);
+       
         IEnumerable<T> AddRange(IEnumerable<T> entities);
 
         Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities);

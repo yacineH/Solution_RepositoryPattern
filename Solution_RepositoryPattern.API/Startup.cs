@@ -42,8 +42,10 @@ namespace Solution_RepositoryPattern.API
             //allow Cors
             services.AddCors();
 
-            //injection
-            services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+            //injection avant ajout unitOfwork
+            //services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+            
+            services.AddTransient<IUnitOfWork,UnitOfWork>();
             
             //config de swagger
             services.AddSwaggerGen(options =>
